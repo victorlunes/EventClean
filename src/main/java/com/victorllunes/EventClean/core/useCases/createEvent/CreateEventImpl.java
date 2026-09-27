@@ -2,7 +2,7 @@ package com.victorllunes.EventClean.core.useCases.createEvent;
 
 import com.victorllunes.EventClean.core.entities.Event;
 
-public class CreateEventImpl implements CreateEventCase {
+public class CreateEventImpl implements CreateEventUseCase {
 
     @Override
     public Event execute(Event event) {
