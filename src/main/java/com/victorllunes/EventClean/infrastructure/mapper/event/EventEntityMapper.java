@@ -2,7 +2,9 @@ package com.victorllunes.EventClean.infrastructure.mapper.event;
 
 import com.victorllunes.EventClean.core.entities.Event;
 import com.victorllunes.EventClean.infrastructure.persistence.EventEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EventEntityMapper {
     public Event toEvent(EventEntity eventEntity) {
         return new Event(

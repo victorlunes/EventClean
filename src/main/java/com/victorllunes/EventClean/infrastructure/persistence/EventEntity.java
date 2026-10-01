@@ -25,5 +25,8 @@ public class EventEntity {
     private LocalDateTime endEvent;
     private LocalDateTime startEvent;
     private int capacity;
+    // grava o nome do enum ("PALESTRA") em vez da posição (1), que é o padrão do JPA
+    // e violaria o CHECK da coluna type_event
+    @Enumerated(EnumType.STRING)
     private TypeEvent typeEvent;
 }

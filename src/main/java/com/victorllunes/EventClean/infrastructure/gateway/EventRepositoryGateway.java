@@ -1,12 +1,14 @@
 package com.victorllunes.EventClean.infrastructure.gateway;
 
 import com.victorllunes.EventClean.core.entities.Event;
-import com.victorllunes.EventClean.core.gateway.EventGatway;
+import com.victorllunes.EventClean.core.gateway.EventGateway;
 import com.victorllunes.EventClean.infrastructure.mapper.event.EventEntityMapper;
 import com.victorllunes.EventClean.infrastructure.persistence.EventEntity;
 import com.victorllunes.EventClean.infrastructure.persistence.EventRespository;
+import org.springframework.stereotype.Component;
 
-public class EventRepositoryGateway implements EventGatway {
+@Component
+public class EventRepositoryGateway implements EventGateway {
 
     private final EventRespository eventRespository;
     private final EventEntityMapper eventEntityMapper;

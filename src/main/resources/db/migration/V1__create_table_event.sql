@@ -1,4 +1,4 @@
-CREATE TABLE events
+CREATE TABLE event
 (
     id            BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(255) NOT NULL,
