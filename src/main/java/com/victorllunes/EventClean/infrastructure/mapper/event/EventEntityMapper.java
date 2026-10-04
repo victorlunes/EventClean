@@ -4,6 +4,8 @@ import com.victorllunes.EventClean.core.entities.Event;
 import com.victorllunes.EventClean.infrastructure.persistence.EventEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * CAMADA: infrastructure — MAPPER (domínio <-> banco).
  *
@@ -49,5 +51,15 @@ public class EventEntityMapper {
                 event.capacity(),
                 event.typeEvent()
         );
+    }
+
+    // Banco -> domínio para listas: aplica o toEvent em cada item.
+    // Usado no allEvents do EventRepositoryGateway.
+    // Obs.: apesar do nome, ele devolve List<Event> (e não de EventEntity);
+    // "toEventList" descreveria melhor o retorno.
+    public List<Event> toEventEntityList(List<EventEntity> eventEntityList) {
+        return eventEntityList.stream()
+                .map(event -> this.toEvent(event))
+                .toList();
     }
 }

@@ -7,6 +7,8 @@ import com.victorllunes.EventClean.infrastructure.persistence.EventEntity;
 import com.victorllunes.EventClean.infrastructure.persistence.EventRespository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * CAMADA: infrastructure — GATEWAY (implementação / "adapter").
  *
@@ -19,7 +21,11 @@ import org.springframework.stereotype.Component;
  * e o core nem percebe.
  *
  * @Component faz o Spring registrar esta classe como o bean de EventGateway,
- * que é usado pelo BeanConfiguration ao montar o CreateEventUseCaseImpl.
+ * que é usado pelo BeanConfiguration ao montar o CreateEventUseCaseImpl e o
+ * AllEventsUseCaseImpl.
+ *
+ * Padrão de todo método daqui: domínio -> banco, chama o repositório,
+ * banco -> domínio. O core só vê Event entrando e saindo.
  */
 @Component
 public class EventRepositoryGateway implements EventGateway {
@@ -43,5 +49,16 @@ public class EventRepositoryGateway implements EventGateway {
         EventEntity newEvent = eventRespository.save(eventEntity);
         // Passo 7: converte de volta para Event, pois o core não conhece EventEntity.
         return eventEntityMapper.toEvent(newEvent);
+    }
+
+    @Override
+    public List<Event> allEvents() {
+        // (listar) Passo 4: o JPA faz um SELECT na tabela event e devolve
+        // as linhas como EventEntity (formato do banco).
+        List<EventEntity> allEvents = eventRespository.findAll();
+
+        // (listar) Passo 5: converte cada EventEntity em Event, pois o core
+        // não conhece EventEntity.
+        return eventEntityMapper.toEventEntityList(allEvents);
     }
 }
