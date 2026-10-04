@@ -1,4 +1,4 @@
-package com.victorllunes.EventClean.core.useCases.allEvents;
+package com.victorllunes.EventClean.core.useCases.listEvents;
 
 import com.victorllunes.EventClean.core.entities.Event;
 import com.victorllunes.EventClean.core.gateway.EventGateway;
@@ -13,15 +13,15 @@ import java.util.List;
  * já terminaram, ordenar por data de início).
  *
  * Como o CreateEventUseCaseImpl, é Java puro: quem cria esta classe é o
- * método @Bean allEventsUseCase do infrastructure/beans/BeanConfiguration.
+ * método @Bean listEventsUseCase do infrastructure/beans/BeanConfiguration.
  */
-public class AllEventsUseCaseImpl implements AllEventsUseCase {
+public class ListEventsUseCaseImpl implements ListEventsUseCase {
 
     // Mesmo EventGateway usado pelo CreateEventUseCaseImpl: o Spring entrega
     // o mesmo objeto (EventRepositoryGateway) aos dois casos de uso.
     private final EventGateway eventGateway;
 
-    public AllEventsUseCaseImpl(EventGateway eventGateway) {
+    public ListEventsUseCaseImpl(EventGateway eventGateway) {
         this.eventGateway = eventGateway;
     }
 
@@ -29,6 +29,6 @@ public class AllEventsUseCaseImpl implements AllEventsUseCase {
     // sem saber que por trás existe um banco de dados.
     @Override
     public List<Event> execute() {
-        return eventGateway.allEvents();
+        return eventGateway.findAll();
     }
 }

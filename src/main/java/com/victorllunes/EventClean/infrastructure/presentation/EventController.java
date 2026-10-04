@@ -1,10 +1,12 @@
 package com.victorllunes.EventClean.infrastructure.presentation;
 
 import com.victorllunes.EventClean.core.entities.Event;
-import com.victorllunes.EventClean.core.useCases.allEvents.AllEventsUseCase;
 import com.victorllunes.EventClean.core.useCases.createEvent.CreateEventUseCase;
+import com.victorllunes.EventClean.core.useCases.listEvents.ListEventsUseCase;
 import com.victorllunes.EventClean.infrastructure.dtos.event.EventDto;
 import com.victorllunes.EventClean.infrastructure.mapper.event.EventMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,38 +18,39 @@ import java.util.List;
  * uso e devolver a resposta. NÃO deve conter regra de negócio — isso é papel
  * do use case.
  *
- * Fluxo completo de POST /event/create-event:
+ * Fluxo completo de POST /events:
  *   1. EventController recebe o JSON como EventDto
  *   2. EventMapper converte EventDto -> Event
  *   3. CreateEventUseCase.execute(event)          (core)
  *   4. EventGateway.createEvent(event)            (interface do core)
  *   5. EventRepositoryGateway converte Event -> EventEntity (EventEntityMapper)
- *   6. EventRespository.save(...) grava no banco
+ *   6. EventRepository.save(...) grava no banco
  *   7. EventEntity salvo -> Event (EventEntityMapper) e volta para o use case
  *   8. EventMapper converte Event -> EventDto e o Spring devolve como JSON
  *
- * Fluxo completo de GET /event/all-events (nos outros arquivos aparece como "(listar) Passo N"):
+ * Fluxo completo de GET /events (nos outros arquivos aparece como "(listar) Passo N"):
  *   1. EventController recebe a requisição (não há corpo, então não há DTO de entrada)
- *   2. AllEventsUseCase.execute()                 (core)
- *   3. EventGateway.allEvents()                   (interface do core)
- *   4. EventRepositoryGateway chama EventRespository.findAll() -> List<EventEntity>
+ *   2. ListEventsUseCase.execute()                (core)
+ *   3. EventGateway.findAll()                     (interface do core)
+ *   4. EventRepositoryGateway chama EventRepository.findAll() -> List<EventEntity>
  *   5. EventEntityMapper converte cada EventEntity -> Event
- *   6. A List<Event> volta pelo use case até o controller e o Spring devolve como JSON
+ *   6. A List<Event> volta até o controller, o EventMapper converte para
+ *      List<EventDto> e o Spring devolve como JSON
  */
 @RestController
-@RequestMapping("/event")
+@RequestMapping("/events")
 public class EventController {
 
     // Depende da INTERFACE do caso de uso; o Spring injeta o bean criado no BeanConfiguration.
     private final CreateEventUseCase createEventUseCase;
-    private final AllEventsUseCase allEventsUseCase;
+    private final ListEventsUseCase listEventsUseCase;
     private final EventMapper eventMapper;
 
     // O controller NÃO cria nem procura suas dependências: só declara no construtor
     // o que precisa. Ao criar o controller, o Spring procura no container um objeto
     // de cada TIPO pedido e o passa aqui (injeção de dependência):
     //   CreateEventUseCase -> criado pelo @Bean no BeanConfiguration
-    //   AllEventsUseCase   -> criado pelo @Bean no BeanConfiguration
+    //   ListEventsUseCase  -> criado pelo @Bean no BeanConfiguration
     //   EventMapper        -> criado pelo Spring por causa do @Component
     // O controller não sabe qual classe concreta recebeu (ex.: CreateEventUseCaseImpl).
     //
@@ -72,27 +75,25 @@ public class EventController {
     public EventController(
             CreateEventUseCase createEventUseCase,
             EventMapper eventMapper,
-            AllEventsUseCase allEventsUseCase) {
+            ListEventsUseCase listEventsUseCase) {
         this.createEventUseCase = createEventUseCase;
         this.eventMapper = eventMapper;
-        this.allEventsUseCase = allEventsUseCase;
+        this.listEventsUseCase = listEventsUseCase;
     }
 
-    @PostMapping("create-event")
-    public EventDto createEvent(@RequestBody EventDto eventDto ) {
+    @PostMapping
+    public ResponseEntity<EventDto> createEvent(@RequestBody EventDto eventDto) {
         // Passos 1 a 7: DTO -> Event -> caso de uso -> ... -> Event salvo
         Event newEvent = createEventUseCase.execute(eventMapper.toEvent(eventDto));
-        // Passo 8: Event -> DTO de resposta
-        return eventMapper.toEventDto(newEvent);
+        // Passo 8: Event -> DTO de resposta (201 Created, pois um recurso foi criado)
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventMapper.toEventDto(newEvent));
     }
 
-    @GetMapping("all-events")
-    public List<Event> getAllEvents() {
-        // (listar) Passos 1 a 6: o use case devolve os eventos já como List<Event>.
-        // Atenção: aqui a entidade do domínio (Event) sai direto como JSON. No
-        // create-event usamos EventDto para separar o contrato da API do core;
-        // para manter o mesmo padrão, o ideal seria retornar List<EventDto>
-        // convertendo cada item com eventMapper.toEventDto.
-        return allEventsUseCase.execute();
+    @GetMapping
+    public ResponseEntity<List<EventDto>> listEvents() {
+        // (listar) Passos 1 a 5: o use case devolve os eventos como List<Event>.
+        List<Event> events = listEventsUseCase.execute();
+        // (listar) Passo 6: Event -> EventDto, para o core não vazar no contrato da API.
+        return ResponseEntity.ok(eventMapper.toEventDtoList(events));
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
  *
  * Quem implementa: infrastructure/gateway/EventRepositoryGateway (o "adapter").
  * Quem usa:        core/useCases/createEvent/CreateEventUseCaseImpl (createEvent)
- *                  core/useCases/allEvents/AllEventsUseCaseImpl     (allEvents)
+ *                  core/useCases/listEvents/ListEventsUseCaseImpl   (findAll)
  *
  * Cada nova operação que o core precisar (buscar por id, deletar...) vira um
  * novo método aqui, e o EventRepositoryGateway é obrigado a implementá-lo.
@@ -25,9 +25,9 @@ import java.util.List;
 public interface EventGateway {
 
     // Passo 4 do fluxo: o use case chama este método sem saber quem o implementa.
-    public Event createEvent(Event event);
+    Event createEvent(Event event);
 
-    // (listar) Passo 3: o AllEventsUseCaseImpl chama este método. Note que ele
+    // (listar) Passo 3: o ListEventsUseCaseImpl chama este método. Note que ele
     // devolve List<Event> (domínio), nunca List<EventEntity> (banco).
-    public List<Event> allEvents();
+    List<Event> findAll();
 }

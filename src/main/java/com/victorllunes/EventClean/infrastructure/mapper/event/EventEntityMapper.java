@@ -54,12 +54,10 @@ public class EventEntityMapper {
     }
 
     // Banco -> domínio para listas: aplica o toEvent em cada item.
-    // Usado no allEvents do EventRepositoryGateway.
-    // Obs.: apesar do nome, ele devolve List<Event> (e não de EventEntity);
-    // "toEventList" descreveria melhor o retorno.
-    public List<Event> toEventEntityList(List<EventEntity> eventEntityList) {
+    // Usado no findAll do EventRepositoryGateway.
+    public List<Event> toEventList(List<EventEntity> eventEntityList) {
         return eventEntityList.stream()
-                .map(event -> this.toEvent(event))
+                .map(this::toEvent)
                 .toList();
     }
 }

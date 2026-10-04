@@ -15,5 +15,5 @@ import com.victorllunes.EventClean.core.entities.Event;
  * trocar a implementação ou criar um mock em testes.
  */
 public interface CreateEventUseCase {
-    public Event execute(Event event);
+    Event execute(Event event);
 }

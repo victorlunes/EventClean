@@ -1,8 +1,8 @@
 package com.victorllunes.EventClean.infrastructure.beans;
 
 import com.victorllunes.EventClean.core.gateway.EventGateway;
-import com.victorllunes.EventClean.core.useCases.allEvents.AllEventsUseCase;
-import com.victorllunes.EventClean.core.useCases.allEvents.AllEventsUseCaseImpl;
+import com.victorllunes.EventClean.core.useCases.listEvents.ListEventsUseCase;
+import com.victorllunes.EventClean.core.useCases.listEvents.ListEventsUseCaseImpl;
 import com.victorllunes.EventClean.core.useCases.createEvent.CreateEventUseCaseImpl;
 import com.victorllunes.EventClean.core.useCases.createEvent.CreateEventUseCase;
 import org.springframework.context.annotation.Bean;
@@ -22,12 +22,12 @@ import org.springframework.context.annotation.Configuration;
  * ele cria os beans e guarda cada um com uma etiqueta: o seu TIPO.
  *
  *   Etiqueta (tipo)      Objeto guardado                De onde veio
- *   EventRespository     implementação gerada           extends JpaRepository
+ *   EventRepository      implementação gerada           extends JpaRepository
  *   EventEntityMapper    new EventEntityMapper()        @Component
  *   EventMapper          new EventMapper()              @Component
  *   EventGateway         new EventRepositoryGateway()   @Component + implements EventGateway
  *   CreateEventUseCase   new CreateEventUseCaseImpl()   @Bean abaixo
- *   AllEventsUseCase     new AllEventsUseCaseImpl()     @Bean abaixo
+ *   ListEventsUseCase    new ListEventsUseCaseImpl()    @Bean abaixo
  *
  * Num método @Bean, a etiqueta é o TIPO DE RETORNO do método (por isso retornamos
  * a interface CreateEventUseCase, e não CreateEventUseCaseImpl).
@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Configuration;
  *                    -> mesmo tipo, o Spring conecta
  *
  * Ordem em que o Spring monta (ele resolve sozinho: cria primeiro o que cada um pede):
- *   EventRespository + EventEntityMapper
+ *   EventRepository + EventEntityMapper
  *     -> EventRepositoryGateway  (guardado como EventGateway)
  *     -> CreateEventUseCaseImpl  (guardado como CreateEventUseCase, por este @Bean)
  *     -> EventController         (recebe CreateEventUseCase e EventMapper)
@@ -63,7 +63,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public AllEventsUseCase allEventsUseCase(EventGateway eventGateway) {
-        return new AllEventsUseCaseImpl(eventGateway);
+    public ListEventsUseCase listEventsUseCase(EventGateway eventGateway) {
+        return new ListEventsUseCaseImpl(eventGateway);
     }
 }

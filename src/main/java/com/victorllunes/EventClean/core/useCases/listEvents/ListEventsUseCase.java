@@ -1,4 +1,4 @@
-package com.victorllunes.EventClean.core.useCases.allEvents;
+package com.victorllunes.EventClean.core.useCases.listEvents;
 
 import com.victorllunes.EventClean.core.entities.Event;
 
@@ -11,9 +11,9 @@ import java.util.List;
  * Segue o mesmo padrão do CreateEventUseCase: uma interface por caso de uso,
  * com um único método execute (aqui sem parâmetros, pois não há filtro).
  *
- * Quem usa:        infrastructure/presentation/EventController (GET /event/all-events).
- * Quem implementa: AllEventsUseCaseImpl.
+ * Quem usa:        infrastructure/presentation/EventController (GET /events).
+ * Quem implementa: ListEventsUseCaseImpl.
  */
-public interface AllEventsUseCase {
-    public List<Event> execute();
+public interface ListEventsUseCase {
+    List<Event> execute();
 }

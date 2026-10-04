@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Só é usado pelo EventRepositoryGateway. O core nunca fala direto com o
  * repositório — ele fala com a interface EventGateway.
  */
-public interface EventRespository extends JpaRepository<EventEntity, Long> {
+public interface EventRepository extends JpaRepository<EventEntity, Long> {
 }

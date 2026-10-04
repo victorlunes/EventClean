@@ -4,7 +4,7 @@ import com.victorllunes.EventClean.core.entities.Event;
 import com.victorllunes.EventClean.core.gateway.EventGateway;
 import com.victorllunes.EventClean.infrastructure.mapper.event.EventEntityMapper;
 import com.victorllunes.EventClean.infrastructure.persistence.EventEntity;
-import com.victorllunes.EventClean.infrastructure.persistence.EventRespository;
+import com.victorllunes.EventClean.infrastructure.persistence.EventRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * CAMADA: infrastructure — GATEWAY (implementação / "adapter").
  *
  * É a PONTE entre o core e o banco de dados. Implementa a interface
- * core/gateway/EventGateway usando JPA (EventRespository).
+ * core/gateway/EventGateway usando JPA (EventRepository).
  *
  * O core chama eventGateway.createEvent(event) achando que fala com uma
  * interface qualquer; em tempo de execução, o Spring injetou ESTA classe.
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @Component faz o Spring registrar esta classe como o bean de EventGateway,
  * que é usado pelo BeanConfiguration ao montar o CreateEventUseCaseImpl e o
- * AllEventsUseCaseImpl.
+ * ListEventsUseCaseImpl.
  *
  * Padrão de todo método daqui: domínio -> banco, chama o repositório,
  * banco -> domínio. O core só vê Event entrando e saindo.
@@ -30,14 +30,14 @@ import java.util.List;
 @Component
 public class EventRepositoryGateway implements EventGateway {
 
-    private final EventRespository eventRespository;
+    private final EventRepository eventRepository;
     private final EventEntityMapper eventEntityMapper;
 
     public EventRepositoryGateway(
-            EventRespository repository,
+            EventRepository repository,
             EventEntityMapper eventEntityMapper
     ) {
-        this.eventRespository = repository;
+        this.eventRepository = repository;
         this.eventEntityMapper = eventEntityMapper;
     }
 
@@ -46,19 +46,19 @@ public class EventRepositoryGateway implements EventGateway {
         // Passo 5: converte o objeto do domínio (Event) para o formato do banco (EventEntity).
         EventEntity eventEntity = eventEntityMapper.toEventEntity(event);
         // Passo 6: o JPA salva no banco e devolve a entidade já com o id gerado.
-        EventEntity newEvent = eventRespository.save(eventEntity);
+        EventEntity newEvent = eventRepository.save(eventEntity);
         // Passo 7: converte de volta para Event, pois o core não conhece EventEntity.
         return eventEntityMapper.toEvent(newEvent);
     }
 
     @Override
-    public List<Event> allEvents() {
+    public List<Event> findAll() {
         // (listar) Passo 4: o JPA faz um SELECT na tabela event e devolve
         // as linhas como EventEntity (formato do banco).
-        List<EventEntity> allEvents = eventRespository.findAll();
+        List<EventEntity> events = eventRepository.findAll();
 
         // (listar) Passo 5: converte cada EventEntity em Event, pois o core
         // não conhece EventEntity.
-        return eventEntityMapper.toEventEntityList(allEvents);
+        return eventEntityMapper.toEventList(events);
     }
 }

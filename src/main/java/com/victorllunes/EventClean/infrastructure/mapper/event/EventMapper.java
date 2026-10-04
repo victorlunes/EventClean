@@ -4,6 +4,8 @@ import com.victorllunes.EventClean.core.entities.Event;
 import com.victorllunes.EventClean.infrastructure.dtos.event.EventDto;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * CAMADA: infrastructure — MAPPER (API <-> domínio).
  *
@@ -48,5 +50,12 @@ public class EventMapper {
                 event.capacity(),
                 event.typeEvent()
         );
+    }
+
+    // Saída para listas: aplica o toEventDto em cada item (usado no GET /events).
+    public List<EventDto> toEventDtoList(List<Event> events) {
+        return events.stream()
+                .map(this::toEventDto)
+                .toList();
     }
 }
