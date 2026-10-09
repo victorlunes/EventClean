@@ -61,4 +61,9 @@ public class EventRepositoryGateway implements EventGateway {
         // não conhece EventEntity.
         return eventEntityMapper.toEventList(events);
     }
+
+    @Override
+    public boolean existsByIdentificator(String identificator) {
+        return eventRepository.existsByIdentificator(identificator);
+    }
 }

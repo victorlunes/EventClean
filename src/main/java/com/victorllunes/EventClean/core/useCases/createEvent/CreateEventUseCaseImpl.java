@@ -1,6 +1,7 @@
 package com.victorllunes.EventClean.core.useCases.createEvent;
 
 import com.victorllunes.EventClean.core.entities.Event;
+import com.victorllunes.EventClean.infrastructure.presentation.exception.event.EventAlreadyExistsException;
 import com.victorllunes.EventClean.core.gateway.EventGateway;
 
 /**
@@ -29,6 +30,14 @@ public class CreateEventUseCaseImpl implements CreateEventUseCase {
     // e pede ao gateway para persisti-lo (passo 4).
     @Override
     public Event execute(Event event) {
+        // Passo 3a: pergunta ao gateway se o identificador já existe no banco.
+        // Passo 3b: se existir, lança a exceção e o método PARA aqui:
+        // o createEvent abaixo nunca é chamado e nada é salvo.
+        if (eventGateway.existsByIdentificator(event.identificator())) {
+            throw new EventAlreadyExistsException();
+        }
+
+        // Passo 4: identificador livre, segue o fluxo normal de criação.
         return eventGateway.createEvent(event);
     }
 }

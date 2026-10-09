@@ -30,4 +30,9 @@ public interface EventGateway {
     // (listar) Passo 3: o ListEventsUseCaseImpl chama este método. Note que ele
     // devolve List<Event> (domínio), nunca List<EventEntity> (banco).
     List<Event> findAll();
+
+    // NOVO — Passo 3a: o CreateEventUseCaseImpl pergunta se o identificador já
+    // está em uso ANTES de salvar. Devolve só true/false: quem decide se isso
+    // é um erro é o use case, não o gateway.
+    boolean existsByIdentificator(String identificator);
 }

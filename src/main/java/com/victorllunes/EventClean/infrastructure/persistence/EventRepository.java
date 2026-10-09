@@ -12,4 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * repositório — ele fala com a interface EventGateway.
  */
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
+    // NOVO — query derivada: o Spring Data lê o nome do método e gera o SELECT
+    // sozinho (WHERE identificator = ?). Devolve true se encontrar alguma linha.
+    boolean existsByIdentificator(String identificator);
 }

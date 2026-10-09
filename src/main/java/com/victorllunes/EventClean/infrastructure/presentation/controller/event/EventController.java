@@ -1,4 +1,4 @@
-package com.victorllunes.EventClean.infrastructure.presentation;
+package com.victorllunes.EventClean.infrastructure.presentation.controller.event;
 
 import com.victorllunes.EventClean.core.entities.Event;
 import com.victorllunes.EventClean.core.useCases.createEvent.CreateEventUseCase;
