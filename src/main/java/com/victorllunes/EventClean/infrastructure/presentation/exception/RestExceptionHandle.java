@@ -2,6 +2,7 @@ package com.victorllunes.EventClean.infrastructure.presentation.exception;
 
 import com.victorllunes.EventClean.infrastructure.presentation.exception.event.EventAlreadyExistsException;
 import com.victorllunes.EventClean.infrastructure.dtos.error.RestErrorMessage;
+import com.victorllunes.EventClean.infrastructure.presentation.exception.event.EventNotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,12 @@ public class RestExceptionHandle extends ResponseEntityExceptionHandler {
     public ResponseEntity<RestErrorMessage> eventAlreadyExists(EventAlreadyExistsException exception) {
         RestErrorMessage response = new RestErrorMessage(exception.getMessage(), HttpStatus.CONFLICT);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(EventNotExistException.class)
+    public ResponseEntity<RestErrorMessage> eventNotExistException(EventNotExistException exception) {
+        RestErrorMessage response = new RestErrorMessage(exception.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     // Qualquer erro inesperado -> 500 com mensagem genérica

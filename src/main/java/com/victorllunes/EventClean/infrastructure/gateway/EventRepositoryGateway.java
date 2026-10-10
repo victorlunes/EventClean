@@ -8,6 +8,7 @@ import com.victorllunes.EventClean.infrastructure.persistence.EventRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * CAMADA: infrastructure — GATEWAY (implementação / "adapter").
@@ -65,5 +66,10 @@ public class EventRepositoryGateway implements EventGateway {
     @Override
     public boolean existsByIdentificator(String identificator) {
         return eventRepository.existsByIdentificator(identificator);
+    }
+
+    @Override
+    public Event findByIdentificator(String identificator) {
+        return eventRepository.findEventByIdentificator(identificator);
     }
 }

@@ -35,4 +35,6 @@ public interface EventGateway {
     // está em uso ANTES de salvar. Devolve só true/false: quem decide se isso
     // é um erro é o use case, não o gateway.
     boolean existsByIdentificator(String identificator);
+
+    Event findByIdentificator(String identificator);
 }

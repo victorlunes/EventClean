@@ -2,6 +2,7 @@ package com.victorllunes.EventClean.infrastructure.presentation.controller.event
 
 import com.victorllunes.EventClean.core.entities.Event;
 import com.victorllunes.EventClean.core.useCases.createEvent.CreateEventUseCase;
+import com.victorllunes.EventClean.core.useCases.findEventByIdentificator.FindEventByIdentificatorUseCase;
 import com.victorllunes.EventClean.core.useCases.listEvents.ListEventsUseCase;
 import com.victorllunes.EventClean.infrastructure.dtos.event.EventDto;
 import com.victorllunes.EventClean.infrastructure.mapper.event.EventMapper;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * CAMADA: infrastructure — APRESENTAÇÃO (porta de entrada HTTP).
@@ -44,6 +46,7 @@ public class EventController {
     // Depende da INTERFACE do caso de uso; o Spring injeta o bean criado no BeanConfiguration.
     private final CreateEventUseCase createEventUseCase;
     private final ListEventsUseCase listEventsUseCase;
+    private final FindEventByIdentificatorUseCase findEventByIdentificatorUseCase;
     private final EventMapper eventMapper;
 
     // O controller NÃO cria nem procura suas dependências: só declara no construtor
@@ -75,10 +78,12 @@ public class EventController {
     public EventController(
             CreateEventUseCase createEventUseCase,
             EventMapper eventMapper,
-            ListEventsUseCase listEventsUseCase) {
+            ListEventsUseCase listEventsUseCase,
+            FindEventByIdentificatorUseCase findEventByIdentificatorUseCase) {
         this.createEventUseCase = createEventUseCase;
         this.eventMapper = eventMapper;
         this.listEventsUseCase = listEventsUseCase;
+        this.findEventByIdentificatorUseCase = findEventByIdentificatorUseCase;
     }
 
     @PostMapping
@@ -89,11 +94,17 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventMapper.toEventDto(newEvent));
     }
 
-    @GetMapping
+    @GetMapping("all-events")
     public ResponseEntity<List<EventDto>> listEvents() {
         // (listar) Passos 1 a 5: o use case devolve os eventos como List<Event>.
         List<Event> events = listEventsUseCase.execute();
         // (listar) Passo 6: Event -> EventDto, para o core não vazar no contrato da API.
         return ResponseEntity.ok(eventMapper.toEventDtoList(events));
+    }
+
+    @GetMapping("/eventByIdentificator")
+    public ResponseEntity<EventDto> getEventByIdentificator(@RequestParam String identificator) {
+        Event event = findEventByIdentificatorUseCase.execute(identificator);
+        return ResponseEntity.ok(eventMapper.toEventDto(event));
     }
 }

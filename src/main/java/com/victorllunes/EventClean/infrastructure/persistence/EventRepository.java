@@ -1,6 +1,9 @@
 package com.victorllunes.EventClean.infrastructure.persistence;
 
+import com.victorllunes.EventClean.core.entities.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 /**
  * CAMADA: infrastructure — REPOSITÓRIO (Spring Data JPA).
@@ -15,4 +18,6 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
     // NOVO — query derivada: o Spring Data lê o nome do método e gera o SELECT
     // sozinho (WHERE identificator = ?). Devolve true se encontrar alguma linha.
     boolean existsByIdentificator(String identificator);
+
+    Event findEventByIdentificator(String identificator);
 }

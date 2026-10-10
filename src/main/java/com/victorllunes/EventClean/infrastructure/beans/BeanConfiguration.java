@@ -1,6 +1,9 @@
 package com.victorllunes.EventClean.infrastructure.beans;
 
+import com.victorllunes.EventClean.core.entities.Event;
 import com.victorllunes.EventClean.core.gateway.EventGateway;
+import com.victorllunes.EventClean.core.useCases.findEventByIdentificator.FindEventByIdentificatorUseCase;
+import com.victorllunes.EventClean.core.useCases.findEventByIdentificator.FindEventByIdentificatorUseCaseImpl;
 import com.victorllunes.EventClean.core.useCases.listEvents.ListEventsUseCase;
 import com.victorllunes.EventClean.core.useCases.listEvents.ListEventsUseCaseImpl;
 import com.victorllunes.EventClean.core.useCases.createEvent.CreateEventUseCaseImpl;
@@ -65,5 +68,10 @@ public class BeanConfiguration {
     @Bean
     public ListEventsUseCase listEventsUseCase(EventGateway eventGateway) {
         return new ListEventsUseCaseImpl(eventGateway);
+    }
+
+    @Bean
+    public FindEventByIdentificatorUseCase findEventByIdentificatorUseCase(EventGateway eventGateway) {
+        return new FindEventByIdentificatorUseCaseImpl(eventGateway);
     }
 }
